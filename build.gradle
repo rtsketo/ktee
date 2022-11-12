@@ -39,7 +39,7 @@ dependencies {
 
 task dokkaJar(type: Jar) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
-    description = "Assembles Kotlin docs with Dokka"
+    description = "Assembles KDocs with Dokka"
     archiveClassifier.set("javadoc")
     from(tasks.dokka)
     dependsOn(tasks.dokka)
@@ -68,7 +68,7 @@ publishing {
 
             pom {
                 name = "ktee-noop"
-                artifactId = "ktee-noop"
+                artifactId = "notee"
             }
         }
 
@@ -79,6 +79,8 @@ publishing {
 
             pom {
                 name = "ktee"
+                artifactId = "yetee"
+
                 description = "KTee is Tee for Kotlin code pipelines. " +
                         "If you love the unix command line tee, you know what we mean."
                 url.set("https://github.com/medly/ktee")
@@ -88,6 +90,7 @@ publishing {
                         url = "https://opensource.org/licenses/MIT"
                     }
                 }
+
                 developers {
                     developer {
                         id = "kdabir"
@@ -95,6 +98,7 @@ publishing {
                         email = "kd@medly.com"
                     }
                 }
+
                 scm {
                     connection = "scm:git:git@github.com:medly/ktee.git"
                     developerConnection = "scm:git:ssh://github.com/medly/ktee.git"
