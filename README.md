@@ -1,6 +1,5 @@
 ## Quick Disclaimer & Guide
 
-This a modified version of [Medly's Ktee](https://github.com/medly/ktee) which adds a noop implementation. 
 To add KTee in your project implement the two artifacts as follows.
 
 ```groovy
@@ -12,7 +11,9 @@ dependencies {
     debugImplementation 'com.github.rtsketo.ktee:yetee:1.0.2'
     releaseImplementation 'com.github.rtsketo.ktee:notee:1.0.2'
 }
-```      
+```
+This repo is a modified version of [Medly's Ktee](https://github.com/medly/ktee) which adds a noop implementation, the `notee` artifact.
+
 
 &nbsp;
 
