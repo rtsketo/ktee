@@ -11,6 +11,14 @@ class KTeeTest {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @Test
+    fun `should execute debug function`() {
+        val message = "Debugging function executed"
+        assertEquals(
+            message + System.lineSeparator(),
+            trapOut { debug { println(message) } })
+    }
+
+    @Test
     fun `should return the original value in chains`() {
         val result = listOf(1, 2, 3).map { it * 2 }.tee { ">> $it" }.reduce(Int::plus).tee()
         assertEquals(12, result)

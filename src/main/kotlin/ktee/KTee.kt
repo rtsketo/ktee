@@ -6,6 +6,8 @@ import org.slf4j.Logger
  * Prints the value to the standard output and returns the same value.
  * Useful when chaining methods.
  *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
+ *
  * Example usage:
  * ```
  * myList.map(fn).tee().reduce(fn)
@@ -22,6 +24,8 @@ fun <T> T.tee(marker: String = "") = apply { println(marker + this) }
  * Executes the provided lambda with the value and prints the result to the standard output.
  * Returns the original value.
  *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
+ *
  * Example usage:
  * ```
  * myList.map(fn).tee { "Value: $it" }.reduce(fn)
@@ -35,6 +39,8 @@ inline fun <T> T.tee(fn: (T) -> String) = apply { println(fn(this)) }
 /**
  * Logs the value at the INFO level using the provided logger.
  * The message can be customized with the `message` parameter.
+ *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
  *
  * Example usage:
  * ```
@@ -51,6 +57,8 @@ fun <T> T.teeToInfo(logger: Logger, message: String = "{}") = apply { logger.inf
  * Evaluates the lambda with the value and logs the result at the INFO level using the provided logger.
  * Returns the original value.
  *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
+ *
  * Example usage:
  * ```
  * myValue.teeToInfo(logger) { "Processed value: $it" }
@@ -65,6 +73,8 @@ inline fun <T> T.teeToInfo(logger: Logger, fn: (T) -> String) = apply { logger.i
 /**
  * Logs the value at the DEBUG level using the provided logger.
  * The message can be customized with the `message` parameter.
+ *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
  *
  * Example usage:
  * ```
@@ -81,6 +91,8 @@ fun <T> T.teeToDebug(logger: Logger, message: String = "{}") = apply { logger.de
  * Evaluates the lambda with the value and logs the result at the DEBUG level using the provided logger.
  * Returns the original value.
  *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
+ *
  * Example usage:
  * ```
  * myValue.teeToDebug(logger) { "Debugging value: $it" }
@@ -95,6 +107,8 @@ inline fun <T> T.teeToDebug(logger: Logger, fn: (T) -> String) = apply { logger.
 /**
  * Logs the value at the TRACE level using the provided logger.
  * The message can be customized with the `message` parameter.
+ *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
  *
  * Example usage:
  * ```
@@ -111,6 +125,8 @@ fun <T> T.teeToTrace(logger: Logger, message: String = "{}") = apply { logger.tr
  * Evaluates the lambda with the value and logs the result at the TRACE level using the provided logger.
  * Returns the original value.
  *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
+ *
  * Example usage:
  * ```
  * myValue.teeToTrace(logger) { "Tracing value: $it" }
@@ -122,5 +138,19 @@ fun <T> T.teeToTrace(logger: Logger, message: String = "{}") = apply { logger.tr
  */
 inline fun <T> T.teeToTrace(logger: Logger, fn: (T) -> String) = apply { logger.trace(fn(this), this) }
 
-
-
+/**
+ * Executes the given lambda function. Typically used for debugging purposes to
+ * encapsulate a block of code that should be executed only during debugging.
+ *
+ * Note: This function would be replaced with a no-op (no operation) version at build time.
+ *
+ * Example usage:
+ * ```
+ * debug {
+ *     println("Debugging information: $someVariable")
+ * }
+ * ```
+ *
+ * @param fn A lambda function that takes no parameters and returns no value.
+ */
+inline fun debug(fn: () -> Unit) = fn()
