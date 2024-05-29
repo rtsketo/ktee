@@ -154,3 +154,20 @@ inline fun <T> T.teeToTrace(logger: Logger, fn: (T) -> String) = apply { logger.
  * @param fn A lambda function that takes no parameters and returns no value.
  */
 inline fun debug(fn: () -> Unit) = fn()
+
+/**
+ * Executes the given lambda function, which contains code that should only run in release builds.
+ *
+ * Note: This function will be replaced with an **op** (operational) version in debug builds.
+ *
+ * Example usage:
+ * ```
+ * release {
+ *     println("This runs only in release mode")
+ * }
+ * ```
+ *
+ * @param fn A lambda function that takes no parameters and returns no value.
+ */
+inline fun release(fn: () -> Unit) = Unit
+

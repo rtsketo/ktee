@@ -11,6 +11,13 @@ class KTeeTest {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @Test
+    fun `should not execute release function`() {
+        val message = "Debugging function executed"
+        assertEquals("",
+            trapOut { release { println(message) } })
+    }
+
+    @Test
     fun `should execute debug function`() {
         val message = "Debugging function executed"
         assertEquals(
