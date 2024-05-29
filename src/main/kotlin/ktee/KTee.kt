@@ -3,62 +3,124 @@ package ktee
 import org.slf4j.Logger
 
 /**
- * Prints the value to the stdout and returns the same value. Useful when chaining
- * methods. For example:
+ * Prints the value to the standard output and returns the same value.
+ * Useful when chaining methods.
  *
+ * Example usage:
+ * ```
  * myList.map(fn).tee().reduce(fn)
  *
  * myList.map(fn).tee(">>> ").reduce(fn)
+ * ```
  *
+ * @param marker An optional string to prepend to the value when printing.
+ * @return The original value.
  */
 fun <T> T.tee(marker: String = "") = apply { println(marker + this) }
 
 /**
+ * Executes the provided lambda with the value and prints the result to the standard output.
+ * Returns the original value.
  *
- * executes the lambda with the value of the chain and writes the
+ * Example usage:
+ * ```
+ * myList.map(fn).tee { "Value: $it" }.reduce(fn)
+ * ```
  *
+ * @param fn A lambda function that takes the value and returns a string to be printed.
+ * @return The original value.
  */
 inline fun <T> T.tee(fn: (T) -> String) = apply { println(fn(this)) }
 
 /**
- * logs the value to the given logger at info level. Message can be customized using message parameter
- */
-fun <T> T.teeToInfo(logger: Logger, message: String = "{}")
-        = apply { logger.info(message, this) }
-
-/**
- * Evaluates the lambda and logs the result (of evaluation) to the given logger at info level
+ * Logs the value at the INFO level using the provided logger.
+ * The message can be customized with the `message` parameter.
  *
- */
-inline fun <T> T.teeToInfo(logger: Logger, fn: (T) -> String)
-        = apply { logger.info(fn(this), this) }
-
-/**
- * logs the value to the given logger at info level. Message can be customized using message parameter
- */
-fun <T> T.teeToDebug(logger: Logger, message: String = "{}")
-        = apply { logger.debug(message, this) }
-
-/**
- * Evaluates the lambda and logs the result (of evaluation) to the given logger at debug level
+ * Example usage:
+ * ```
+ * myValue.teeToInfo(logger, "Processed value: {}")
+ * ```
  *
+ * @param logger The SLF4J logger to use.
+ * @param message The log message template. Defaults to "{}".
+ * @return The original value.
  */
-inline fun <T> T.teeToDebug(logger: Logger, fn: (T) -> String)
-        = apply { logger.debug(fn(this), this) }
+fun <T> T.teeToInfo(logger: Logger, message: String = "{}") = apply { logger.info(message, this) }
 
 /**
- * logs the value to the given logger at trace level. Message can be customized using message parameter
- */
-fun <T> T.teeToTrace(logger: Logger, message: String = "{}")
-        = apply { logger.trace(message, this) }
-
-/**
- * Evaluates the lambda and logs the result (of evaluation) to the given logger at trace level
+ * Evaluates the lambda with the value and logs the result at the INFO level using the provided logger.
+ * Returns the original value.
  *
+ * Example usage:
+ * ```
+ * myValue.teeToInfo(logger) { "Processed value: $it" }
+ * ```
+ *
+ * @param logger The SLF4J logger to use.
+ * @param fn A lambda function that takes the value and returns a string to be logged.
+ * @return The original value.
  */
-inline fun <T> T.teeToTrace(logger: Logger, fn: (T) -> String)
-        = apply { logger.trace(fn(this), this) }
+inline fun <T> T.teeToInfo(logger: Logger, fn: (T) -> String) = apply { logger.info(fn(this), this) }
 
+/**
+ * Logs the value at the DEBUG level using the provided logger.
+ * The message can be customized with the `message` parameter.
+ *
+ * Example usage:
+ * ```
+ * myValue.teeToDebug(logger, "Debugging value: {}")
+ * ```
+ *
+ * @param logger The SLF4J logger to use.
+ * @param message The log message template. Defaults to "{}".
+ * @return The original value.
+ */
+fun <T> T.teeToDebug(logger: Logger, message: String = "{}") = apply { logger.debug(message, this) }
+
+/**
+ * Evaluates the lambda with the value and logs the result at the DEBUG level using the provided logger.
+ * Returns the original value.
+ *
+ * Example usage:
+ * ```
+ * myValue.teeToDebug(logger) { "Debugging value: $it" }
+ * ```
+ *
+ * @param logger The SLF4J logger to use.
+ * @param fn A lambda function that takes the value and returns a string to be logged.
+ * @return The original value.
+ */
+inline fun <T> T.teeToDebug(logger: Logger, fn: (T) -> String) = apply { logger.debug(fn(this), this) }
+
+/**
+ * Logs the value at the TRACE level using the provided logger.
+ * The message can be customized with the `message` parameter.
+ *
+ * Example usage:
+ * ```
+ * myValue.teeToTrace(logger, "Tracing value: {}")
+ * ```
+ *
+ * @param logger The SLF4J logger to use.
+ * @param message The log message template. Defaults to "{}".
+ * @return The original value.
+ */
+fun <T> T.teeToTrace(logger: Logger, message: String = "{}") = apply { logger.trace(message, this) }
+
+/**
+ * Evaluates the lambda with the value and logs the result at the TRACE level using the provided logger.
+ * Returns the original value.
+ *
+ * Example usage:
+ * ```
+ * myValue.teeToTrace(logger) { "Tracing value: $it" }
+ * ```
+ *
+ * @param logger The SLF4J logger to use.
+ * @param fn A lambda function that takes the value and returns a string to be logged.
+ * @return The original value.
+ */
+inline fun <T> T.teeToTrace(logger: Logger, fn: (T) -> String) = apply { logger.trace(fn(this), this) }
 
 
 
