@@ -4,6 +4,8 @@ package ktee
 
 import org.slf4j.Logger
 
+object KTee { var prefix = "" }
+
 inline fun debug(fn: () -> Unit) = Unit
 inline fun release(fn: ()->Unit) = fn()
 inline fun <T> T.tee(fn: (T) -> String) = this

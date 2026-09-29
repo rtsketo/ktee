@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    debugImplementation 'com.github.rtsketo.ktee:yetee:1.0.2'
-    releaseImplementation 'com.github.rtsketo.ktee:notee:1.0.2'
+    debugImplementation 'com.github.rtsketo.ktee:yetee:1.0.5'
+    releaseImplementation 'com.github.rtsketo.ktee:notee:1.0.5'
 }
 ```
 This repo is a modified version of [Medly's Ktee](https://github.com/medly/ktee) which adds a noop implementation, the `notee` artifact.
@@ -88,6 +88,15 @@ Produces:
 even numbers: [2, 4, 6, 8, 10]
 doubles >>>>> [4, 8, 12, 16, 20]
 the result is 60
+```
+
+Set `KTee.prefix` to prepend a global prefix to `tee` and `teeToInfo`/`teeToDebug`/`teeToTrace` messages. It defaults to `""`, leaving existing output unchanged.
+
+```kotlin
+import ktee.KTee
+
+KTee.prefix = "[app] "
+"request-42".tee("Processed: ") // [app] Processed: request-42
 ```
 
 &nbsp;

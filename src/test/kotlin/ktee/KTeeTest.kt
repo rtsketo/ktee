@@ -42,6 +42,44 @@ class KTeeTest {
     }
 
     @Test
+    fun `should prepend global prefix to all tee output`() {
+        val previous = KTee.prefix
+        KTee.prefix = "[app] "
+        try {
+            assertEquals("[app] Processed: request-42" + System.lineSeparator(), trapOut { "request-42".tee("Processed: ") })
+            assertEquals("[app] request-42" + System.lineSeparator(), trapOut { "request-42".tee() })
+            assertEquals("[app] Processed: request-42" + System.lineSeparator(), trapOut { "request-42".tee { "Processed: $it" } })
+        } finally {
+            KTee.prefix = previous
+        }
+    }
+
+    @Test
+    fun `should prepend global prefix to all logger output`() {
+        val previous = KTee.prefix
+        KTee.prefix = "[app] "
+        try {
+            val outputs = listOf(
+                trapErr { "request-42".teeToInfo(logger, "Processed: {}") },
+                trapErr { "request-42".teeToInfo(logger) { "Processed: $it" } },
+                trapErr { "request-42".teeToDebug(logger, "Processed: {}") },
+                trapErr { "request-42".teeToDebug(logger) { "Processed: $it" } },
+                trapErr { "request-42".teeToTrace(logger, "Processed: {}") },
+                trapErr { "request-42".teeToTrace(logger) { "Processed: $it" } }
+            )
+            outputs.forEach { assertTrue(it.endsWith("[app] Processed: request-42" + System.lineSeparator())) }
+            val defaults = listOf(
+                trapErr { "request-42".teeToInfo(logger) },
+                trapErr { "request-42".teeToDebug(logger) },
+                trapErr { "request-42".teeToTrace(logger) }
+            )
+            defaults.forEach { assertTrue(it.endsWith("[app] request-42" + System.lineSeparator())) }
+        } finally {
+            KTee.prefix = previous
+        }
+    }
+
+    @Test
     fun `should write to logger`() {
         assertTrue(trapErr { "myval".teeToInfo(logger) }.endsWith("myval" + System.lineSeparator()))
     }

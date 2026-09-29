@@ -1,6 +1,10 @@
 package ktee
 
+import ktee.KTee.prefix
 import org.slf4j.Logger
+
+/** Prefix prepended to every tee output. */
+object KTee { var prefix = "" }
 
 /**
  * Prints the value to the standard output and returns the same value.
@@ -18,7 +22,7 @@ import org.slf4j.Logger
  * @param marker An optional string to prepend to the value when printing.
  * @return The original value.
  */
-fun <T> T.tee(marker: String = "") = apply { println(marker + this) }
+fun <T> T.tee(marker: String = "") = apply { println(prefix + marker + this) }
 
 /**
  * Executes the provided lambda with the value and prints the result to the standard output.
@@ -34,7 +38,7 @@ fun <T> T.tee(marker: String = "") = apply { println(marker + this) }
  * @param fn A lambda function that takes the value and returns a string to be printed.
  * @return The original value.
  */
-inline fun <T> T.tee(fn: (T) -> String) = apply { println(fn(this)) }
+inline fun <T> T.tee(fn: (T) -> String) = apply { println(prefix + fn(this)) }
 
 /**
  * Logs the value at the INFO level using the provided logger.
@@ -51,7 +55,7 @@ inline fun <T> T.tee(fn: (T) -> String) = apply { println(fn(this)) }
  * @param message The log message template. Defaults to "{}".
  * @return The original value.
  */
-fun <T> T.teeToInfo(logger: Logger, message: String = "{}") = apply { logger.info(message, this) }
+fun <T> T.teeToInfo(logger: Logger, message: String = "{}") = apply { logger.info(prefix + message, this) }
 
 /**
  * Evaluates the lambda with the value and logs the result at the INFO level using the provided logger.
@@ -68,7 +72,7 @@ fun <T> T.teeToInfo(logger: Logger, message: String = "{}") = apply { logger.inf
  * @param fn A lambda function that takes the value and returns a string to be logged.
  * @return The original value.
  */
-inline fun <T> T.teeToInfo(logger: Logger, fn: (T) -> String) = apply { logger.info(fn(this), this) }
+inline fun <T> T.teeToInfo(logger: Logger, fn: (T) -> String) = apply { logger.info(prefix + fn(this), this) }
 
 /**
  * Logs the value at the DEBUG level using the provided logger.
@@ -85,7 +89,7 @@ inline fun <T> T.teeToInfo(logger: Logger, fn: (T) -> String) = apply { logger.i
  * @param message The log message template. Defaults to "{}".
  * @return The original value.
  */
-fun <T> T.teeToDebug(logger: Logger, message: String = "{}") = apply { logger.debug(message, this) }
+fun <T> T.teeToDebug(logger: Logger, message: String = "{}") = apply { logger.debug(prefix + message, this) }
 
 /**
  * Evaluates the lambda with the value and logs the result at the DEBUG level using the provided logger.
@@ -102,7 +106,7 @@ fun <T> T.teeToDebug(logger: Logger, message: String = "{}") = apply { logger.de
  * @param fn A lambda function that takes the value and returns a string to be logged.
  * @return The original value.
  */
-inline fun <T> T.teeToDebug(logger: Logger, fn: (T) -> String) = apply { logger.debug(fn(this), this) }
+inline fun <T> T.teeToDebug(logger: Logger, fn: (T) -> String) = apply { logger.debug(prefix + fn(this), this) }
 
 /**
  * Logs the value at the TRACE level using the provided logger.
@@ -119,7 +123,7 @@ inline fun <T> T.teeToDebug(logger: Logger, fn: (T) -> String) = apply { logger.
  * @param message The log message template. Defaults to "{}".
  * @return The original value.
  */
-fun <T> T.teeToTrace(logger: Logger, message: String = "{}") = apply { logger.trace(message, this) }
+fun <T> T.teeToTrace(logger: Logger, message: String = "{}") = apply { logger.trace(prefix + message, this) }
 
 /**
  * Evaluates the lambda with the value and logs the result at the TRACE level using the provided logger.
@@ -136,7 +140,7 @@ fun <T> T.teeToTrace(logger: Logger, message: String = "{}") = apply { logger.tr
  * @param fn A lambda function that takes the value and returns a string to be logged.
  * @return The original value.
  */
-inline fun <T> T.teeToTrace(logger: Logger, fn: (T) -> String) = apply { logger.trace(fn(this), this) }
+inline fun <T> T.teeToTrace(logger: Logger, fn: (T) -> String) = apply { logger.trace(prefix + fn(this), this) }
 
 /**
  * Executes the given lambda function. Typically used for debugging purposes to
