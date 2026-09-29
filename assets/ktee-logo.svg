@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 280" role="img" aria-labelledby="title desc">
+  <title id="title">KTee</title>
+  <desc id="desc">A flowing K-shaped pipeline beside the KTee wordmark.</desc>
+  <defs>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#a3e635"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101b31"/>
+      <stop offset="1" stop-color="#0b1223"/>
+    </linearGradient>
+  </defs>
+  <rect width="930" height="280" rx="40" fill="url(#panel)"/>
+  <rect x="40" y="40" width="200" height="200" rx="48" fill="#18283c" stroke="#315067" stroke-width="2"/>
+  <path d="M94 89v102m0-51 82-51m-82 51 82 51" fill="none" stroke="url(#flow)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="94" cy="140" r="11" fill="#f0fdfa"/>
+  <circle cx="176" cy="89" r="9" fill="#a3e635"/>
+  <circle cx="176" cy="191" r="9" fill="#a3e635"/>
+  <text x="285" y="158" fill="#f8fafc" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="100" font-weight="800" letter-spacing="-5">K</text>
+  <text x="355" y="158" fill="#a3e635" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="100" font-weight="800" letter-spacing="-5">Tee</text>
+  <text x="289" y="204" fill="#a8b8cf" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="2">SEE THE VALUE · KEEP THE FLOW</text>
+</svg>

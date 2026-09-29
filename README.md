@@ -1,13 +1,47 @@
+<div align="center">
+  <h1><img src="assets/ktee-logo.svg" alt="KTee — see the value, keep the flow" width="760"></h1>
+  <p><strong>Peek at values. Keep your pipeline.</strong></p>
+  <p>A tiny Kotlin <code>tee</code> for inspecting values as they flow through a chain.</p>
+  <p>
+    <a href="https://github.com/rtsketo/ktee/releases/tag/1.0.5"><img alt="Release" src="https://img.shields.io/github/v/release/rtsketo/ktee?label=release&amp;color=7c3aed"></a>
+    <a href="https://kotlinlang.org/"><img alt="Kotlin 1.7.20" src="https://img.shields.io/badge/Kotlin-1.7.20-22d3ee"></a>
+    <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-a3e635"></a>
+  </p>
+  <p><a href="#quick-start">Quick start</a> · <a href="#installation">Install</a> · <a href="#global-prefix">Global prefix</a> · <a href="#api-at-a-glance">API</a></p>
+</div>
 
-&nbsp;
+## Why KTee?
 
-## Quick Disclaimer & Guide
+A pipeline is easier to follow when you can inspect intermediate values without breaking the chain. KTee prints or logs a value **and returns that same value**, so the rest of the expression stays intact.
 
-To add KTee in your project implement the two artifacts as follows.
+`tee()` writes to standard output in the active artifact, `yetee`. Pair it with the `notee` artifact for release builds: the same calls compile, but tee output and tee lambdas are skipped.
+
+## Quick start
+
+```kotlin
+import ktee.tee
+
+val total = (1..10)
+    .filter { it % 2 == 0 }.tee("even: ")
+    .map { it * 2 }.tee { "doubled: $it" }
+    .reduce(Int::plus).tee("total: ")
+```
+
+```text
+even: [2, 4, 6, 8, 10]
+doubled: [4, 8, 12, 16, 20]
+total: 60
+```
+
+`total` is still `60`. Add or remove tee calls without changing the value returned by the pipeline.
+
+## Installation
+
+Add [JitPack](https://jitpack.io/#rtsketo/ktee) to the repositories used for dependencies. For Android projects with debug and release variants, use **yetee for debug** and **notee for release**:
 
 ```groovy
-repositories {		
-    maven { url "https://jitpack.io" }
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -15,109 +49,75 @@ dependencies {
     releaseImplementation 'com.github.rtsketo.ktee:notee:1.0.5'
 }
 ```
-This repo is a modified version of [Medly's Ktee](https://github.com/medly/ktee) which adds a noop implementation, the `notee` artifact.
 
-
-&nbsp;
-
-&nbsp;
-
-
-# KTee
-
-KTee is Tee for Kotlin code pipelines. If you love the unix command line `tee`, you know what we mean.
-
-![KTee](https://repository-images.githubusercontent.com/234463826/e1de5980-c09f-11ea-902f-7ebfca88e75a)
-
-
-&nbsp;
-
-
-## Why?
-
-Often times we need to break a perfect computation pipeline just to be able to log the intermediate values. For example, lets take a look at this code:
+With Gradle Kotlin DSL, the dependency declarations are:
 
 ```kotlin
-(1..10)
-    .filter { it % 2 == 0 }
-    .map { it * 2 }
-    .reduce(Int::plus)
+dependencies {
+    debugImplementation("com.github.rtsketo.ktee:yetee:1.0.5")
+    releaseImplementation("com.github.rtsketo.ktee:notee:1.0.5")
+}
 ```
 
-If we want to print the result of `filter` or `map` we need to either capture the result into an intermediate `val` or add a `.let { }` with logging statements.
+If your project manages repositories in `settings.gradle(.kts)`, put the JitPack repository there instead. In a plain JVM project, depend on the artifact appropriate for that build; `debugImplementation` and `releaseImplementation` are Android variant configurations.
 
-KTee simplifies printing intermediate values dramatically.
+## Global prefix
 
-&nbsp;
-
-## How?
-
-Just `.tee()` it. Seriously! Try this:
-
-```kotlin
-(1..10)
-    .filter { it % 2 == 0 }.tee()
-    .map { it * 2 }.tee()
-    .reduce(Int::plus).tee()
-```
-
-Which produces following output on the console:
-
-```text
-[2, 4, 6, 8, 10]
-[4, 8, 12, 16, 20]
-60
-```
-
-&nbsp;
-
-## Can I Customize the output?
-
-We can customize the way `tee` prints using markers and lambda blocks to return custom log messages.
-
-```kotlin
-(1..10)
-    .filter { it % 2 == 0 }.tee("even numbers: ")
-    .map { it * 2 }.tee("doubles >>>>> ")
-    .reduce(Int::plus).tee {"the result is $it"}
-```               
-
-Produces:
-
-```
-even numbers: [2, 4, 6, 8, 10]
-doubles >>>>> [4, 8, 12, 16, 20]
-the result is 60
-```
-
-Set `KTee.prefix` to prepend a global prefix to `tee` and `teeToInfo`/`teeToDebug`/`teeToTrace` messages. It defaults to `""`, leaving existing output unchanged.
+Set `KTee.prefix` to prepend the same string to **every KTee stdout and SLF4J message**. It starts as `""`, so existing `tee()` and `tee { }` calls keep their original output until you set it.
 
 ```kotlin
 import ktee.KTee
+import ktee.tee
 
 KTee.prefix = "[app] "
-"request-42".tee("Processed: ") // [app] Processed: request-42
+"request-42".tee("Processed: ")    // [app] Processed: request-42
+"request-42".tee()                  // [app] request-42
+"request-42".tee { "Processed: $it" } // [app] Processed: request-42
 ```
 
-&nbsp;
+The global prefix comes **before** a per-call marker or lambda result. The no-op artifact exposes `KTee.prefix` too, but does not print anything. This setting is mutable and shared across calls; choose and set it in your app's initialization code.
 
-## Can I tee to a `logger`?
+## Log with SLF4J
 
-We can also log to a custom logger instance (slf4j) instead of `stdout`
+Pass your SLF4J `Logger` to log at the desired level. Each function also returns its receiver, just like `tee()`.
 
 ```kotlin
-(1..10)
-    .filter { it % 2 == 0 }.teeToDebug(logger)
-    .map { it * 2 }.teeToTrace(logger)
-    .reduce(Int::plus).teeToInfo(logger) { "the result is $it" }
+import ktee.teeToDebug
+import ktee.teeToInfo
+import ktee.teeToTrace
+import org.slf4j.LoggerFactory
+
+val logger = LoggerFactory.getLogger("KTeeDemo")
+"request-42".teeToDebug(logger)
+"request-42".teeToTrace(logger, "Tracing {}")
+"request-42".teeToInfo(logger) { "Processed: $it" }
 ```
 
-Produces:
+The message overload defaults to `"{}"`, and the global prefix applies to both message and lambda overloads. Your SLF4J binding controls the final log format; `tee()` prints directly to stdout instead.
 
-```
-[main] DEBUG ktee.KTeeTest - [2, 4, 6, 8, 10]
-[main] TRACE ktee.KTeeTest - [4, 8, 12, 16, 20]
-[main] INFO ktee.KTeeTest - the result is 60
+## API at a glance
+
+| Call | Active artifact (`yetee`) | No-op artifact (`notee`) |
+| --- | --- | --- |
+| `value.tee()` | Print the value | Return the value |
+| `value.tee("label: ")` | Print the label and value | Return the value |
+| `value.tee { "value: $it" }` | Print the lambda result | Return the value without evaluating the lambda |
+| `value.teeToInfo(logger)` | Log at INFO | Return the value |
+| `value.teeToDebug(logger)` | Log at DEBUG | Return the value |
+| `value.teeToTrace(logger)` | Log at TRACE | Return the value |
+| `debug { ... }` | Run the block | Skip the block |
+| `release { ... }` | Skip the block | Run the block |
+
+The `teeTo*` functions also accept a message template or a lambda. All tee calls preserve the original value and its type.
+
+## Development
+
+Run the tests and check that the release substitute compiles:
+
+```sh
+./gradlew test compileNoopKotlin
 ```
 
-> This output was produced using `slf4j-simple` binding. Your output pattern may look different depending on logger's configuration
+## Origins and license
+
+This project builds on [Medly's KTee](https://github.com/medly/ktee). The fork adds a no-op artifact and a shared prefix for tee output. Licensed under [MIT](LICENSE).
